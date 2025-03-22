@@ -1,0 +1,50 @@
+.Input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border: 1px solid var(--input-border);
+  cursor: pointer;
+  position: relative;
+  max-height: max-content;
+  border-radius: var(--border-radius);
+
+  &:has(:disabled) {
+    border-color: var(--input-border-disabled);
+    .Input__element {
+      cursor: not-allowed;
+      color: var(--input-text-disabled);
+    }
+    .Input__label {
+      color: var(--input-border-disabled);
+    }
+  }
+
+  &:focus-within {
+    border-color: var(--input-border-focused);
+    .Input__label {
+      color: var(--input-border-focused);
+    }
+    .Input__element {
+      color: var(--input-text-focused);
+    }
+  }
+  &__element {
+    margin: 0;
+    color: var(--input-text);
+    padding: 0.4rem 0.1rem 0.4rem 0.5rem;
+    border: none;
+    background: transparent;
+    &:focus-visible {
+      outline: none;
+    }
+  }
+  &__label {
+    background: #ffffff;
+    padding: 0 0.2em;
+    color: var(--input-border);
+    position: absolute;
+    font-size: 0.7rem;
+    top: -0.6em;
+    left: 0.6em;
+  }
+}

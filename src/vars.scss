@@ -1,5 +1,5 @@
 :root {
-  --border-radius: 6px;
+  --border-radius: 4px;
 
   --text-primary: #001b2e;
   --text-secondary: #ffffff;
@@ -17,4 +17,11 @@
   --list-item-text-hover: #ffffff;
   --list-item-selected: #157bb7;
   --list-item-text-selected: #ffffff;
+
+  --input-border: #126494;
+  --input-border-focused: #36a6e7;
+  --input-border-disabled: #a1a1a1;
+  --input-text: #001b2e;
+  --input-text-focused: #001b2e;
+  --input-text-disabled: #a1a1a1;
 }
