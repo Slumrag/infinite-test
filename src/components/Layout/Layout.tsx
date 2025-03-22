@@ -9,8 +9,8 @@ export type LayoutProps = ComponentPropsWithoutRef<'div'> & {
 const Layout: React.FC<LayoutProps> = ({ className, children, sidebar, ...props }) => {
   return (
     <div className={cn(className, classes.Layout)} {...props}>
-      <aside>{sidebar}</aside>
-      <main>{children}</main>
+      <aside className={classes.Layout__sidebar}>{sidebar}</aside>
+      <main className={classes.Layout__main}>{children}</main>
     </div>
   );
 };

@@ -1,3 +1,20 @@
 .Layout {
+  --sidebar-width: 250px;
   display: flex;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  font-family: Roboto, sans-serif;
+  &__sidebar {
+    min-width: var(--sidebar-width);
+    overflow: hidden;
+    position: fixed;
+  }
+  &__main {
+    position: relative;
+    left: var(--sidebar-width);
+    flex: 1;
+    max-width: calc(100% - var(--sidebar-width));
+  }
 }
