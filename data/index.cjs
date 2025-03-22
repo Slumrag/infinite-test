@@ -3,12 +3,18 @@ const { faker } = require('@faker-js/faker');
 faker.seed(0);
 const data = { users: [] };
 function createRandomUser() {
+  const firstName = faker.person.firstName();
+  const lastName = faker.person.lastName();
+  const email = faker.internet.email({ firstName, lastName });
   return {
     id: faker.string.uuid(),
-    name: faker.person.fullName(),
+    firstName,
+    lastName,
+    email,
+    birthBate: faker.date.birthdate(),
     department: faker.commerce.department(),
     company: faker.company.name(),
-    job_title: faker.person.jobTitle(),
+    jobTitle: faker.person.jobTitle(),
   };
 }
 module.exports = () => {
