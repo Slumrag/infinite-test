@@ -1,5 +1,7 @@
+import Layout from '@components/Layout';
+
 function App() {
-  return <div> app</div>;
+  return <Layout sidebar={<div>side</div>}> app</Layout>;
 }
 
 export default App;
