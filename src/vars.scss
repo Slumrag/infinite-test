@@ -1,11 +1,15 @@
 :root {
+  --border-radius: 6px;
+
   --text-primary: #001b2e;
   --text-secondary: #ffffff;
 
   --button-primary: #157bb7;
-  --button-primary-hover: #36a6e7;
   --button-primary-text: #ffffff;
+  --button-primary-hover: #36a6e7;
   --button-primary-text-hover: #ffffff;
+  --button-primary-disabled: #a1a1a1;
+  --button-primary-text-disabled: #ffffff;
 
   --list-item: transparent;
   --list-item-text: #001b2e;
