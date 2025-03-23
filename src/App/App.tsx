@@ -1,9 +1,9 @@
 import Layout from '@components/Layout';
-import UsersList from '@components/UsersList';
+import UsersList from '@/App/components/UsersList';
 import { useEffect, useState } from 'react';
 import { userService } from '@api/services';
 import { ApiUser } from '@api/schema';
-import UserForm from '@components/UserForm';
+import UserForm from '@/App/components/UserForm';
 import Header from '@components/Header';
 
 function App() {

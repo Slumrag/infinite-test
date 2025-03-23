@@ -1,8 +1,8 @@
 import React, { ComponentPropsWithRef, useEffect, useState } from 'react';
 import classes from './UserForm.module.scss';
 import { default as cn } from 'classnames';
-import Button from '../Button';
-import Input from '../Input';
+import Button from '../../../components/Button';
+import Input from '../../../components/Input';
 
 type UserFormFields = {
   firstName: string;
