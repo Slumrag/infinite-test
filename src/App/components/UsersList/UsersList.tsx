@@ -6,8 +6,8 @@ import { ApiUser } from '@api/schema';
 
 export type UsersListProps = ComponentPropsWithoutRef<'ul'> & {
   users?: ApiUser[];
-  value?: ApiUser;
-  onSelectValue?: (value: ApiUser) => void;
+  value?: string;
+  onSelectValue?: (value: string) => void;
 };
 
 const UsersList: React.FC<UsersListProps> = ({
@@ -23,10 +23,10 @@ const UsersList: React.FC<UsersListProps> = ({
         <li
           key={el.id}
           onClick={() => {
-            if (onSelectValue) onSelectValue(el);
+            if (onSelectValue) onSelectValue(el.id);
           }}
         >
-          <UserItem selected={value?.id === el.id} user={el.firstName + ' ' + el.lastName} />
+          <UserItem selected={value === el.id} user={el.firstName + ' ' + el.lastName} />
         </li>
       ))}
     </ul>
