@@ -5,28 +5,42 @@ import { userService } from '@api/services';
 import { ApiUser } from '@api/schema';
 import UserForm from '@/App/components/UserForm';
 import Header from '@components/Header';
+import {
+  useEditUserMutation,
+  useGetUserByIdQuery,
+  useGetUsersInfiniteQuery,
+} from '@/store/features/api/apiSlice';
 
 function App() {
-  const [users, setUsers] = useState<ApiUser[]>([]);
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const response = await userService.get({ size: 50 });
-      setUsers(response.data);
-    };
-    fetchUsers();
-  }, []);
-  const [user, setUser] = useState<ApiUser>({} as ApiUser);
-
+  const [userId, setUserId] = useState<string>('');
+  const {
+    data: user,
+    isLoading: isUserLoading,
+    isSuccess: isUserSuccess,
+    isError: isUserError,
+  } = useGetUserByIdQuery(userId!, { skip: !userId });
+  const { data: users, isLoading, isFetching, refetch } = useGetUsersInfiniteQuery();
+  const [editUser] = useEditUserMutation();
   return (
     <Layout
-      sidebar={<UsersList value={user} onSelectValue={(value) => setUser(value)} users={users} />}
+      sidebar={
+        <UsersList
+          value={userId}
+          onSelectValue={(value) => setUserId(value)}
+          users={users?.pages[0]}
+        />
+      }
     >
-      {user?.id && (
-        <div style={{ padding: ' 0 2rem' }}>
-          <Header title={`${user.firstName} ${user.lastName}`} subtitle={user.company} />
-          <UserForm value={user as ApiUser}></UserForm>
-        </div>
-      )}
+      <div style={{ padding: ' 0 2rem' }}>
+        {isUserError && 'Error'}
+        {isUserLoading && 'loading..'}
+        {isUserSuccess && (
+          <Header title={`${user?.firstName} ${user?.lastName}`} subtitle={user?.company} />
+        )}
+        {isUserSuccess && (
+          <UserForm value={user} onSubmitValue={(value) => editUser({ id: userId, ...value })} />
+        )}
+      </div>
     </Layout>
   );
 }
