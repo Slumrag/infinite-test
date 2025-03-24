@@ -11,7 +11,7 @@ function createRandomUser() {
     firstName,
     lastName,
     email,
-    birthBate: faker.date.birthdate(),
+    birthDate: faker.date.birthdate(),
     department: faker.commerce.department(),
     company: faker.company.name(),
     jobTitle: faker.person.jobTitle(),
