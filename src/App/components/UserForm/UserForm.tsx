@@ -1,8 +1,8 @@
-import React, { ComponentPropsWithRef, useEffect, useState } from 'react';
+import React, { ComponentPropsWithoutRef, ComponentPropsWithRef, useEffect, useState } from 'react';
 import classes from './UserForm.module.scss';
 import { default as cn } from 'classnames';
-import Button from '../../../components/Button';
-import Input from '../../../components/Input';
+import Button from '@components/Button';
+import Input from '@components/Input';
 
 type UserFormFields = {
   firstName: string;
@@ -19,11 +19,13 @@ export type UserFormProps<T = UserFormFields> = ComponentPropsWithRef<'form'> & 
   onSubmitValue?: (value: T) => void;
 };
 
-const fields: {
-  name: keyof UserFormFields;
-  type: string;
-  label: string;
-}[] = [
+const fields: Array<
+  ComponentPropsWithoutRef<'input'> & {
+    name: keyof UserFormFields;
+    label?: string;
+    formatter?: (value: unknown) => string;
+  }
+> = [
   {
     name: 'firstName',
     type: 'text',
@@ -39,6 +41,7 @@ const fields: {
     type: 'date',
     name: 'birthDate',
     label: 'Дата рождения',
+    formatter: (value) => (value as string)?.slice(0, 10),
   },
   { type: 'text', name: 'company', label: 'Компания' },
   {
@@ -56,13 +59,15 @@ const fields: {
 const UserForm = React.forwardRef<HTMLFormElement, UserFormProps>(
   ({ className, value, onSubmitValue, ...props }, ref) => {
     const [formData, setFormData] = useState<UserFormFields>(value as UserFormFields);
+
     useEffect(() => {
-      if (value) setFormData(value);
+      if (value) {
+        setFormData(value);
+      }
     }, [value]);
 
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
       const { value, name } = e.target;
-
       setFormData((data) => ({
         ...data,
         [name]: value,
@@ -70,28 +75,36 @@ const UserForm = React.forwardRef<HTMLFormElement, UserFormProps>(
     };
 
     return (
-      <form
-        autoComplete='off'
-        ref={ref}
-        className={cn(className, classes.UserForm)}
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (onSubmitValue) onSubmitValue(formData);
-        }}
-        {...props}
-      >
-        <div className={classes.UserForm__fields}>
-          {fields.map((el) => (
-            <Input key={el.name} value={formData[el.name]} onChange={handleInput} {...el} />
-          ))}
-        </div>
-        <div className={classes.UserForm__actions}>
-          <Button type='reset' variant='outline'>
-            отменить
-          </Button>
-          <Button type='submit'>сохранить</Button>
-        </div>
-      </form>
+      <>
+        <form
+          autoComplete='off'
+          ref={ref}
+          className={cn(className, classes.UserForm)}
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (onSubmitValue) onSubmitValue(formData);
+          }}
+          {...props}
+        >
+          <div className={classes.UserForm__fields}>
+            {fields.map(({ name, formatter, ...el }) => (
+              <Input
+                key={name}
+                name={name}
+                value={formatter ? formatter(formData[name]) : formData[name]}
+                onChange={handleInput}
+                {...el}
+              />
+            ))}
+          </div>
+          <div className={classes.UserForm__actions}>
+            <Button type='reset' variant='outline'>
+              отменить
+            </Button>
+            <Button type='submit'>сохранить</Button>
+          </div>
+        </form>
+      </>
     );
   }
 );
