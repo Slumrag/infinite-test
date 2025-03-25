@@ -1,11 +1,20 @@
 import { ApiUser } from '@/api/schema';
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createSelector } from '@reduxjs/toolkit';
+import {
+  BaseQueryFn,
+  createApi,
+  fetchBaseQuery,
+  InfiniteData,
+  TypedUseQueryStateResult,
+} from '@reduxjs/toolkit/query/react';
 
-type ApiUserPatch = Pick<ApiUser, 'id'> & Partial<Omit<ApiUser, 'id'>>;
-type UsersInitialPageParam = {
+export type ApiUserPatch = Pick<ApiUser, 'id'> & Partial<Omit<ApiUser, 'id'>>;
+export type UsersInitialPageParam = {
   offset: number;
   limit: number;
 };
+export type SimplifiedUser = Pick<ApiUser, 'id'> & { fullName: string };
+
 export const apiSlice = createApi({
   reducerPath: 'api',
   tagTypes: ['User'],
@@ -18,7 +27,7 @@ export const apiSlice = createApi({
       query: (id) => `/users/${id}`,
       providesTags: (result, error, id) => [{ type: 'User', id }],
     }),
-    getUsers: builder.infiniteQuery<ApiUser[], void, UsersInitialPageParam>({
+    getUsers: builder.infiniteQuery<SimplifiedUser[], void, UsersInitialPageParam>({
       infiniteQueryOptions: {
         initialPageParam: {
           offset: 0,
@@ -26,11 +35,11 @@ export const apiSlice = createApi({
         },
         getNextPageParam: (lastPage, allPages, lastPageParam) => {
           const nextOffset = lastPageParam.offset + lastPageParam.limit;
-          const remainingItems = lastPage?.length - nextOffset;
+          // const remainingItems = lastPage?.length - nextOffset;
 
-          if (remainingItems <= 0) {
-            return undefined;
-          }
+          // if (remainingItems <= 0) {
+          //   return undefined;
+          // }
 
           return {
             ...lastPageParam,
@@ -49,8 +58,22 @@ export const apiSlice = createApi({
       },
 
       query: ({ pageParam: { offset, limit } }) => `/users?_start=${offset}&_limit=${limit}`,
-      providesTags: (result) =>
-        result ? result.pageParams.map((el) => ({ type: 'User', pageParams: el })) : ['User'],
+      transformResponse: (response: ApiUser[]) => {
+        return response.map(({ id, firstName, lastName }) => ({
+          id,
+          fullName: `${firstName} ${lastName}`,
+        }));
+      },
+      // providesTags: (result, error,) =>
+      //   result
+      //     ? [
+      //         ...result.pages.map(({ id }) => ({
+      //           type: 'User' as const,
+      //           id,
+      //         })),
+      //         'User',
+      //       ]
+      //     : ['User'],
     }),
 
     editUser: builder.mutation<ApiUser, ApiUserPatch>({
@@ -60,8 +83,43 @@ export const apiSlice = createApi({
       },
 
       invalidatesTags: (result, error, { id }) => [{ type: 'User', id }],
+
+      // async onQueryStarted({ id, ...patch }, { dispatch, queryFulfilled }) {
+      //   try {
+      //     const { data: updatedUser, meta } = await queryFulfilled;
+
+      //     const patchResult = dispatch(
+      //       apiSlice.util.updateQueryData('getUsers', undefined, (draft) => {
+      //         draft.pages[0][0] = updatedUser;
+      //       })
+      //     );
+      //   } catch {}
+      // },
     }),
   }),
 });
 
-export const { useGetUsersInfiniteQuery, useGetUserByIdQuery, useEditUserMutation } = apiSlice;
+export const selectUsersResult = apiSlice.endpoints.getUsers.select();
+
+export const selectAllUsers = createSelector(
+  selectUsersResult,
+  (usersResult) => usersResult?.data?.pages.flat() ?? []
+);
+
+type GetPostSelectFromResultArg = TypedUseQueryStateResult<
+  InfiniteData<SimplifiedUser[], UsersInitialPageParam>,
+  unknown,
+  BaseQueryFn
+>;
+
+export const selectAllUsersFromResult = createSelector(
+  (res: GetPostSelectFromResultArg) => res.data,
+  (data) => data?.pages.flat() ?? []
+);
+
+export const {
+  useGetUsersInfiniteQuery,
+  useLazyGetUserByIdQuery,
+  useGetUserByIdQuery,
+  useEditUserMutation,
+} = apiSlice;

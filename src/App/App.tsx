@@ -1,11 +1,10 @@
 import Layout from '@components/Layout';
 import UsersList from '@/App/components/UsersList';
 import { useEffect, useState } from 'react';
-import { userService } from '@api/services';
-import { ApiUser } from '@api/schema';
 import UserForm from '@/App/components/UserForm';
 import Header from '@components/Header';
 import {
+  selectAllUsersFromResult,
   useEditUserMutation,
   useGetUserByIdQuery,
   useGetUsersInfiniteQuery,
@@ -19,16 +18,32 @@ function App() {
     isSuccess: isUserSuccess,
     isError: isUserError,
   } = useGetUserByIdQuery(userId!, { skip: !userId });
-  const { data: users, isLoading, isFetching, refetch } = useGetUsersInfiniteQuery();
+
   const [editUser] = useEditUserMutation();
+  const { data, isSuccess, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useGetUsersInfiniteQuery(undefined, {
+      selectFromResult: (result) => {
+        return {
+          ...result,
+          data: selectAllUsersFromResult(result),
+        };
+      },
+    });
   return (
     <Layout
       sidebar={
-        <UsersList
-          value={userId}
-          onSelectValue={(value) => setUserId(value)}
-          users={users?.pages[0]}
-        />
+        <>
+          {isSuccess && (
+            <UsersList
+              hasNextPage={hasNextPage}
+              list={data!}
+              isNextPageLoading={isFetchingNextPage}
+              value={userId}
+              onSelectValue={setUserId}
+              loadNextPage={() => fetchNextPage()}
+            />
+          )}
+        </>
       }
     >
       <div style={{ padding: ' 0 2rem' }}>
