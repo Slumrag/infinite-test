@@ -25,7 +25,6 @@ export const apiSlice = createApi({
   endpoints: (builder) => ({
     getUserById: builder.query<ApiUser, string>({
       query: (id) => `/users/${id}`,
-      providesTags: (result, error, id) => [{ type: 'User', id }],
     }),
     getUsers: builder.infiniteQuery<SimplifiedUser[], void, UsersInitialPageParam>({
       infiniteQueryOptions: {
@@ -84,17 +83,16 @@ export const apiSlice = createApi({
 
       invalidatesTags: (result, error, { id }) => [{ type: 'User', id }],
 
-      // async onQueryStarted({ id, ...patch }, { dispatch, queryFulfilled }) {
-      //   try {
-      //     const { data: updatedUser, meta } = await queryFulfilled;
-
-      //     const patchResult = dispatch(
-      //       apiSlice.util.updateQueryData('getUsers', undefined, (draft) => {
-      //         draft.pages[0][0] = updatedUser;
-      //       })
-      //     );
-      //   } catch {}
-      // },
+      async onQueryStarted({ id, ...patch }, { dispatch, queryFulfilled }) {
+        try {
+          const { data: updatedUser } = await queryFulfilled;
+          const patchResult = dispatch(
+            apiSlice.util.updateQueryData('getUserById', id, (draft) => {
+              Object.assign(draft, updatedUser);
+            })
+          );
+        } catch {}
+      },
     }),
   }),
 });
