@@ -6,18 +6,22 @@ import Header from '@components/Header';
 import {
   selectAllUsersFromResult,
   useEditUserMutation,
-  useGetUserByIdQuery,
   useGetUsersInfiniteQuery,
+  useLazyGetUserByIdQuery,
 } from '@/store/features/api/apiSlice';
 
 function App() {
   const [userId, setUserId] = useState<string>('');
-  const {
-    data: user,
-    isLoading: isUserLoading,
-    isSuccess: isUserSuccess,
-    isError: isUserError,
-  } = useGetUserByIdQuery(userId!, { skip: !userId });
+  const [
+    trigger,
+    { data: user, isLoading: isUserLoading, isSuccess: isUserSuccess, isError: isUserError },
+  ] = useLazyGetUserByIdQuery();
+
+  useEffect(() => {
+    if (userId) {
+      trigger(userId);
+    }
+  }, [trigger, userId]);
 
   const [editUser] = useEditUserMutation();
   const { data, isSuccess, fetchNextPage, hasNextPage, isFetchingNextPage } =
