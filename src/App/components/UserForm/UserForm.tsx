@@ -98,9 +98,6 @@ const UserForm = React.forwardRef<HTMLFormElement, UserFormProps>(
             ))}
           </div>
           <div className={classes.UserForm__actions}>
-            <Button type='reset' variant='outline'>
-              отменить
-            </Button>
             <Button type='submit'>сохранить</Button>
           </div>
         </form>
