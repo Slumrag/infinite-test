@@ -5,15 +5,27 @@ import { default as cn } from 'classnames';
 export type UserItemProps = ComponentPropsWithoutRef<'div'> & {
   user?: string;
   selected?: boolean;
+  loading?: boolean;
 };
 
-const UserItem: React.FC<UserItemProps> = ({ className, user, selected = false, ...props }) => {
+const UserItem: React.FC<UserItemProps> = ({
+  className,
+  user,
+  selected = false,
+  loading = false,
+  ...props
+}) => {
   return (
     <div
-      className={cn(className, classes.UserItem, { [classes.UserItem_selected]: selected })}
+      className={cn(
+        className,
+        classes.UserItem,
+        { [classes.UserItem_selected]: selected },
+        { [classes.UserItem_loading]: loading }
+      )}
       {...props}
     >
-      <p>{user}</p>
+      <p>{loading ? 'загрузка...' : user}</p>
     </div>
   );
 };

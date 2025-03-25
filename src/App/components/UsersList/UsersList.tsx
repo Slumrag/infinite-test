@@ -37,21 +37,17 @@ const UsersList: React.FC<InfiniteListProps> = ({
   const isRowLoaded: (props: Index) => boolean = ({ index }) => !hasNextPage || index < list.length;
 
   const rowRenderer: ListRowRenderer = ({ index, key, style }) => {
-    let content: string;
-
-    if (!isRowLoaded({ index })) {
-      content = 'Loading...';
-    } else {
-      content = `#${index + 1} ${list[index]!.fullName} `;
-    }
+    const content = `#${index + 1} ${list[index]?.fullName} `;
+    const isLoading = !isRowLoaded({ index });
 
     return (
       <UserItem
         key={key}
         style={style}
         user={content}
-        selected={value === list[index].id}
-        onClick={() => onSelectValue(list[index].id)}
+        selected={value === list[index]?.id}
+        loading={isLoading}
+        onClick={() => !isLoading && onSelectValue(list[index]?.id)}
       />
     );
   };

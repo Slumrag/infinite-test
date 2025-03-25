@@ -8,12 +8,17 @@
   p {
     margin: 0;
   }
-  &:not(:disabled, .UserItem_selected):hover {
+  &:not(:disabled, .UserItem_selected, .UserItem_loading):hover {
     color: var(--list-item-text-hover);
     background: var(--list-item-hover);
   }
   &_selected {
     color: var(--list-item-text-selected);
     background: var(--list-item-selected);
+  }
+  &_loading {
+    cursor: default;
+    color: var(--list-item-text);
+    background: var(--list-item);
   }
 }
