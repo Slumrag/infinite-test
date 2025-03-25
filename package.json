@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.6.1",
+    "@types/react-virtualized": "^9.22.2",
     "axios": "^1.7.9",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
