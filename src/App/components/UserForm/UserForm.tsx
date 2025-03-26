@@ -16,7 +16,9 @@ type UserFormFields = {
 
 export type UserFormProps<T = UserFormFields> = ComponentPropsWithRef<'form'> & {
   value?: T;
-  onSubmitValue?: (value: T) => void;
+  onSubmitValue?: (value: T) => void | Promise<void>;
+  disabled?: boolean;
+  loading?: boolean;
 };
 
 const fields: Array<
@@ -30,8 +32,9 @@ const fields: Array<
     name: 'firstName',
     type: 'text',
     label: 'Имя',
+    required: true,
   },
-  { type: 'text', name: 'lastName', label: 'Фамилия' },
+  { type: 'text', name: 'lastName', label: 'Фамилия', required: true },
   {
     type: 'email',
     name: 'email',
@@ -61,9 +64,8 @@ const fields: Array<
 ];
 
 const UserForm = React.forwardRef<HTMLFormElement, UserFormProps>(
-  ({ className, value, onSubmitValue, ...props }, ref) => {
+  ({ className, value, onSubmitValue, disabled = false, loading = false, ...props }, ref) => {
     const [formData, setFormData] = useState<UserFormFields>(value as UserFormFields);
-
     useEffect(() => {
       if (value) {
         setFormData(value);
@@ -86,7 +88,9 @@ const UserForm = React.forwardRef<HTMLFormElement, UserFormProps>(
           className={cn(className, classes.UserForm)}
           onSubmit={(e) => {
             e.preventDefault();
-            if (onSubmitValue) onSubmitValue(formData);
+            if (onSubmitValue) {
+              onSubmitValue(formData);
+            }
           }}
           {...props}
         >
@@ -97,12 +101,16 @@ const UserForm = React.forwardRef<HTMLFormElement, UserFormProps>(
                 name={name}
                 value={formatter ? formatter(formData[name]) : formData[name]}
                 onChange={handleInput}
+                disabled={disabled}
+                readOnly={loading}
                 {...el}
               />
             ))}
           </div>
           <div className={classes.UserForm__actions}>
-            <Button type='submit'>сохранить</Button>
+            <Button type='submit' disabled={disabled} loading={loading}>
+              сохранить
+            </Button>
           </div>
         </form>
       </>

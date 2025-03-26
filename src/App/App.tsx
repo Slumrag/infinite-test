@@ -23,7 +23,7 @@ function App() {
     }
   }, [triggerUserById, userId]);
 
-  const [editUser] = useEditUserMutation();
+  const [editUser, { isLoading: isUserMutating }] = useEditUserMutation();
   const { data, isSuccess, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useGetUsersInfiniteQuery(undefined, {
       selectFromResult: (result) => {
@@ -58,7 +58,13 @@ function App() {
           <Header title={`${user?.firstName} ${user?.lastName}`} subtitle={user?.company} />
         )}
         {isUserSuccess && (
-          <UserForm value={user} onSubmitValue={(value) => editUser({ id: userId, ...value })} />
+          <UserForm
+            value={user}
+            loading={isUserMutating}
+            onSubmitValue={(value) => {
+              editUser({ id: userId, ...value });
+            }}
+          />
         )}
       </div>
     </Layout>
