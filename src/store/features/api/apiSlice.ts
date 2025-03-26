@@ -46,6 +46,10 @@ export const apiSlice = createApi({
         getNextPageParam: (lastPage, allPages, lastPageParam, allPagesParam) => {
           const nextOffset = lastPageParam.offset + lastPageParam.limit;
 
+          const totalCount = 1_000_000;
+          if (totalCount - nextOffset <= 0) {
+            return undefined;
+          }
           return {
             ...lastPageParam,
             offset: nextOffset,
