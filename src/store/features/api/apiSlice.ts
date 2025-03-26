@@ -1,4 +1,5 @@
 import { ApiUser } from '@/api/schema';
+
 import { createEntityAdapter, createSelector, EntityState } from '@reduxjs/toolkit';
 import {
   BaseQueryFn,
@@ -12,16 +13,17 @@ export type ApiUserPatch = Pick<ApiUser, 'id'> & Partial<Omit<ApiUser, 'id'>>;
 export type UsersInitialPageParam = {
   offset: number;
   limit: number;
-  total: number;
 };
 export type SimplifiedUser = Pick<ApiUser, 'id'> & { fullName: string };
 
 const usersAdapter = createEntityAdapter<SimplifiedUser>();
 const initialState = usersAdapter.getInitialState();
+
 const simplifiedUserAdapter = ({ id, firstName, lastName }: ApiUser): SimplifiedUser => ({
   id,
   fullName: `${firstName} ${lastName}`,
 });
+
 export type UserEntity = EntityState<SimplifiedUser, string>;
 
 export const apiSlice = createApi({
@@ -34,16 +36,16 @@ export const apiSlice = createApi({
   endpoints: (builder) => ({
     getUserById: builder.query<ApiUser, string>({
       query: (id) => `/users/${id}`,
+      providesTags: (result, error, id) => [{ type: 'User', id }],
     }),
+
     getUsers: builder.infiniteQuery<UserEntity, void, UsersInitialPageParam>({
       infiniteQueryOptions: {
         initialPageParam: {
-          offset: 1_000_000 - 30,
-          limit: 20,
-          total: 0,
+          offset: 0,
+          limit: 100,
         },
-
-        getNextPageParam: (lastPage, allPages, lastPageParam, allPagesParam) => {
+        getNextPageParam: (lastPage, allPages, lastPageParam) => {
           const nextOffset = lastPageParam.offset + lastPageParam.limit;
 
           const totalCount = 1_000_000;
@@ -67,9 +69,9 @@ export const apiSlice = createApi({
       },
 
       query: ({ pageParam: { offset, limit } }) => `/users?_start=${offset}&_limit=${limit}`,
-      transformResponse: (response: ApiUser[], meta) => {
-        // const total = meta?.response?.headers.get('X-Total-Count');
+      transformResponse: (response: ApiUser[]) => {
         const simplified = response.map(simplifiedUserAdapter);
+
         return usersAdapter.setAll(initialState, simplified);
       },
     }),
@@ -85,11 +87,6 @@ export const apiSlice = createApi({
       async onQueryStarted({ id }, { dispatch, queryFulfilled }) {
         try {
           const { data: updatedUser } = await queryFulfilled;
-          dispatch(
-            apiSlice.util.updateQueryData('getUserById', id, (draft) => {
-              Object.assign(draft, updatedUser);
-            })
-          );
           dispatch(
             apiSlice.util.updateQueryData('getUsers', undefined, (draft) => {
               const updatedPageIndex = draft.pages.findIndex((el) => el.entities[id]);
@@ -111,8 +108,6 @@ export const apiSlice = createApi({
 });
 
 export const selectUsersResult = apiSlice.endpoints.getUsers.select();
-
-// const selectUsersData = createSelector(selectUsersResult, (result) => result.data ?? initialState);
 
 type GetPostSelectFromResultArg = TypedUseQueryStateResult<
   InfiniteData<UserEntity, UsersInitialPageParam>,
