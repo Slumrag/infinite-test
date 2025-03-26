@@ -37,7 +37,7 @@ const UsersList: React.FC<InfiniteListProps> = ({
   const isRowLoaded: (props: Index) => boolean = ({ index }) => !hasNextPage || index < list.length;
 
   const rowRenderer: ListRowRenderer = ({ index, key, style }) => {
-    const content = `#${index + 1} ${list[index]?.fullName} `;
+    const content = list[index]?.fullName;
     const isLoading = !isRowLoaded({ index });
 
     return (
