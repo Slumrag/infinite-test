@@ -10,6 +10,8 @@
 ## Технологии
 
 - [TypeScript](https://www.typescriptlang.org/)
+- [React](https://www.react.dev/)
+- [Redux-toolkit](https://redux-toolkit.js.org/)
 
 ## Разработка
 
