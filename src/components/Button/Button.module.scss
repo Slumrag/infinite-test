@@ -1,3 +1,16 @@
+@keyframes pulse {
+  0% {
+    background-color: var(--button-primary);
+  }
+
+  70% {
+    background-color: var(--button-primary-hover);
+  }
+  100% {
+    background-color: var(--button-primary);
+  }
+}
+
 .Button {
   display: flex;
   padding: 0 0.7rem;
@@ -29,6 +42,7 @@
       background-color: var(--button-primary-disabled);
     }
   }
+
   &_outline {
     border: 1px solid var(--button-primary);
     color: var(--button-primary);
@@ -45,5 +59,9 @@
       border-color: var(--button-primary-disabled);
       color: var(--button-primary-disabled);
     }
+  }
+
+  &_loading {
+    animation: 2s ease-in-out infinite pulse;
   }
 }
