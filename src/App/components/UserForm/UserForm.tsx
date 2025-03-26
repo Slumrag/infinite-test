@@ -36,23 +36,27 @@ const fields: Array<
     type: 'email',
     name: 'email',
     label: 'E-mail',
+    required: true,
   },
   {
     type: 'date',
     name: 'birthDate',
     label: 'Дата рождения',
+    required: true,
     formatter: (value) => (value as string)?.slice(0, 10),
   },
-  { type: 'text', name: 'company', label: 'Компания' },
+  { type: 'text', name: 'company', label: 'Компания', required: true },
   {
     type: 'text',
     name: 'department',
     label: 'Отдел',
+    required: true,
   },
   {
     type: 'text',
     name: 'jobTitle',
     label: 'Должность',
+    required: true,
   },
 ];
 
