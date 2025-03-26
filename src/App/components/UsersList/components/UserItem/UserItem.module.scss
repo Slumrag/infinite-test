@@ -5,7 +5,11 @@
   background: var(--list-item);
   cursor: pointer;
   align-items: center;
+
   p {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     margin: 0;
   }
   &:not(:disabled, .UserItem_selected, .UserItem_loading):hover {
