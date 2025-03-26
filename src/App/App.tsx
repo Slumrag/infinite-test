@@ -51,24 +51,28 @@ function App() {
         </>
       }
     >
-      <div style={{ padding: ' 0 2rem' }}>
+      <>
         {isUserError && 'Error'}
-        {isUserLoading && 'loading..'}
+        {isUserLoading && 'загрузка...'}
         {isUserSuccess && (
-          <Header title={`${user?.firstName} ${user?.lastName}`} subtitle={user?.company} />
-        )}
-        {isUserSuccess && (
-          <div style={{ maxWidth: 400 }}>
-            <UserForm
-              value={user}
-              loading={isUserMutating}
-              onSubmitValue={(value) => {
-                editUser({ id: userId, ...value });
-              }}
-            />
+          <div style={{ marginBottom: '2rem' }}>
+            <Header title={`${user?.firstName} ${user?.lastName}`} subtitle={user?.company} />
           </div>
         )}
-      </div>
+        <div style={{ padding: ' 0 2rem' }}>
+          {isUserSuccess && (
+            <div style={{ maxWidth: 400 }}>
+              <UserForm
+                value={user}
+                loading={isUserMutating}
+                onSubmitValue={(value) => {
+                  editUser({ id: userId, ...value });
+                }}
+              />
+            </div>
+          )}
+        </div>
+      </>
     </Layout>
   );
 }
