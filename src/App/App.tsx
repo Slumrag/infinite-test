@@ -58,13 +58,15 @@ function App() {
           <Header title={`${user?.firstName} ${user?.lastName}`} subtitle={user?.company} />
         )}
         {isUserSuccess && (
-          <UserForm
-            value={user}
-            loading={isUserMutating}
-            onSubmitValue={(value) => {
-              editUser({ id: userId, ...value });
-            }}
-          />
+          <div style={{ maxWidth: 400 }}>
+            <UserForm
+              value={user}
+              loading={isUserMutating}
+              onSubmitValue={(value) => {
+                editUser({ id: userId, ...value });
+              }}
+            />
+          </div>
         )}
       </div>
     </Layout>
