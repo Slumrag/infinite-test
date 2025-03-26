@@ -13,15 +13,15 @@ import {
 function App() {
   const [userId, setUserId] = useState<string>('');
   const [
-    trigger,
+    triggerUserById,
     { data: user, isLoading: isUserLoading, isSuccess: isUserSuccess, isError: isUserError },
   ] = useLazyGetUserByIdQuery();
 
   useEffect(() => {
     if (userId) {
-      trigger(userId);
+      triggerUserById(userId);
     }
-  }, [trigger, userId]);
+  }, [triggerUserById, userId]);
 
   const [editUser] = useEditUserMutation();
   const { data, isSuccess, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -33,6 +33,7 @@ function App() {
         };
       },
     });
+
   return (
     <Layout
       sidebar={
