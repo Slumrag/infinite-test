@@ -6,7 +6,8 @@ const store = configureStore(
   {
     reducer: { [apiSlice.reducerPath]: apiSlice.reducer },
 
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware),
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({ serializableCheck: false }).concat(apiSlice.middleware),
   },
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
