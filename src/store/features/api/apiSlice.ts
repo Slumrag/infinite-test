@@ -122,7 +122,14 @@ type GetPostSelectFromResultArg = TypedUseQueryStateResult<
 
 export const selectAllUsersFromResult = createSelector(
   (res: GetPostSelectFromResultArg) => res.data,
-  (data) => data?.pages.map((el) => Object.values(el.entities)).flat() ?? []
+  (data) => {
+    const list =
+      data?.pages.reduce(
+        (acc, cur) => [...acc, ...Object.values(cur.entities)],
+        [] as SimplifiedUser[]
+      ) ?? [];
+    return list;
+  }
 );
 
 export const { selectAll: selectAllUsers, selectById: selectUserById } =
